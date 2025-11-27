@@ -1,8 +1,6 @@
 package controllers
 
-import (
-	"cashflow/internal/domain/transaction"
-)
+import "github.com/Guilbritto/cash-api/internal/domain/transaction"
 
 type ControllerBase struct {
 	TransactionService transaction.TransactionService

@@ -1,9 +1,8 @@
 package controllers
 
 import (
-	"cashflow/internal/domain/transaction"
-	"cashflow/internal/dto"
-
+	"github.com/Guilbritto/cash-api/internal/domain/transaction"
+	"github.com/Guilbritto/cash-api/internal/dto"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -1,9 +1,9 @@
 package transaction
 
 import (
-	"cashflow/internal/dto"
 	"testing"
 
+	"github.com/Guilbritto/cash-api/internal/dto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

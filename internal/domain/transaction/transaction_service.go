@@ -1,9 +1,9 @@
 package transaction
 
 import (
-	"cashflow/internal/dto"
 	"time"
 
+	"github.com/Guilbritto/cash-api/internal/dto"
 	"github.com/google/uuid"
 )
 

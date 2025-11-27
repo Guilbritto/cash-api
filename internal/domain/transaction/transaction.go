@@ -1,9 +1,9 @@
 package transaction
 
 import (
-	"cashflow/internal/errors"
 	"time"
 
+	"github.com/Guilbritto/cash-api/internal/errors"
 	"github.com/google/uuid"
 )
 
