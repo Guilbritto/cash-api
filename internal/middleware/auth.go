@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	oidc "github.com/coreos/go-oidc/v3/oidc"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -35,6 +36,12 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		fmt.Println(err.Error())
 		return c.SendStatus(fiber.StatusUnauthorized)
 	}
+
+	tokenObject, _ := jwt.Parse(token, nil)
+	claims := tokenObject.Claims.(jwt.MapClaims)
+
+	c.Locals("userId", claims["sub"])
+	c.Locals("email", claims["email"])
 
 	return c.Next()
 }

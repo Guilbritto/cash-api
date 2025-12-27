@@ -1,0 +1,171 @@
+basePath: /api
+definitions:
+  category.Category:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      transactions:
+        items:
+          $ref: '#/definitions/transaction.Transaction'
+        type: array
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    required:
+    - created_at
+    - id
+    - name
+    - transactions
+    - updated_at
+    - user_id
+    type: object
+  dto.CreateCategoryRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  dto.CreateTransactionRequest:
+    properties:
+      amount:
+        type: number
+      category:
+        type: string
+      date:
+        type: string
+      description:
+        type: string
+      type:
+        type: integer
+    type: object
+  dto.ErrorResponse:
+    properties:
+      message:
+        example: invalid payload
+        type: string
+    type: object
+  transaction.Transaction:
+    properties:
+      amount:
+        type: number
+      category_id:
+        type: string
+      created_at:
+        type: string
+      date:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      type:
+        type: integer
+      updated_at:
+        type: string
+    required:
+    - amount
+    - category_id
+    - created_at
+    - date
+    - id
+    - type
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: voce@example.com
+    name: Guilherme
+  description: Backend em Go para controle financeiro pessoal.
+  termsOfService: http://example.com/terms/
+  title: API de Controle Financeiro
+  version: "1.0"
+paths:
+  /categories:
+    post:
+      consumes:
+      - application/json
+      description: Cria uma categoria para o usuário autenticado
+      parameters:
+      - description: Dados da categoria
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/category.Category'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Cria uma nova categoria
+      tags:
+      - categories
+  /transactions:
+    get:
+      consumes:
+      - application/json
+      description: Retorna todas as transações do usuário autenticado no sistema
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/transaction.Transaction'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Obtém todas as transações do usuário autenticado
+      tags:
+      - transactions
+    post:
+      consumes:
+      - application/json
+      description: Cria uma transação de despesa ou receita para o usuário autenticado
+      parameters:
+      - description: Dados da transação
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/transaction.Transaction'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Cria uma nova transação
+      tags:
+      - transactions
+swagger: "2.0"

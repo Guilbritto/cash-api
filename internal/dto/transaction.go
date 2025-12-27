@@ -1,10 +1,14 @@
 package dto
 
-type TransactionRequest struct {
-	Description string  `validate:"required"`
-	Amount      float64 `validate:"required"`
-}
+import "time"
 
+type CreateTransactionRequest struct {
+	Amount      float64   `json:"amount"`
+	Type        int       `json:"type"`
+	Date        time.Time `json:"date"`
+	Description string    `json:"description"`
+	CategoryId  string    `json:"category_id"`
+}
 type TransactionResponse struct {
 	Id          string
 	Description string

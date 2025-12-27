@@ -9,7 +9,7 @@ import (
 func ValidateStruct(obj interface{}) error {
 	validate := validator.New()
 	err := validate.Struct(obj)
-	if err != nil {
+	if err == nil {
 		return nil
 	}
 	validationErrros := err.(validator.ValidationErrors)
@@ -25,6 +25,4 @@ func ValidateStruct(obj interface{}) error {
 	default:
 		return errors.New("field " + validationError.Field() + " is invalid")
 	}
-
-	return nil
 }
