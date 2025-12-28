@@ -26,3 +26,15 @@ func (c *CategoryRepository) GetById(categoryId string) (*models.Category, error
 
 	return &category, nil
 }
+
+func (c *CategoryRepository) GetAll(userId string) (*[]models.Category, error) {
+	var categories []models.Category
+
+	result := c.Db.Find(&categories).Where("user_id=? OR user_id=null", userId)
+	if result.Error != nil {
+		return &[]models.Category{}, result.Error
+	}
+
+	return &categories, nil
+
+}

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"github.com/Guilbritto/cash-api/internal/dto"
-	"github.com/Guilbritto/cash-api/internal/models"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -18,9 +17,9 @@ func (h *Handlers) RegisterTransactionEndpoint(api fiber.Router) {
 // @Accept       json
 // @Produce      json
 // @Param        body  body      dto.CreateTransactionRequest  true  "Dados da transação"
-// @Success      201   {object}  transaction.Transaction
+// @Success      201   {object}  models.Transaction
 // @Failure      400   {object}  dto.ErrorResponse
-// @Failure      401   {object}  dto.ErrorResponse
+// @Failure      401
 // @Router       /transactions [post]
 func (h *Handlers) CreateTransaction(c *fiber.Ctx) error {
 	transaction := new(dto.CreateTransactionRequest)
@@ -47,14 +46,12 @@ func (h *Handlers) CreateTransaction(c *fiber.Ctx) error {
 // @Tags         transactions
 // @Accept       json
 // @Produce      json
-// @Success      200   {object}  transaction.Transaction
+// @Success      200   {object}  models.Transaction
 // @Failure      401   {object}  dto.ErrorResponse
 // @Failure      500   {object}  dto.ErrorResponse
 // @Router       /transactions [get]
 func (h *Handlers) GetTransactions(c *fiber.Ctx) error {
 	transactions, err := h.UseCases.TransactionUseCase.GetAll(c.Locals("userId").(string))
-	transactionResponse := make(map[string][]models.Transaction)
-	transactionResponse["transactions"] = transactions
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -62,6 +59,6 @@ func (h *Handlers) GetTransactions(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.JSON(transactionResponse)
+	return c.JSON(transactions)
 
 }

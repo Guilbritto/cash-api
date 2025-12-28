@@ -47,7 +47,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/category.Category"
+                            "$ref": "#/definitions/handlers.CategoryResponse"
                         }
                     },
                     "400": {
@@ -82,7 +82,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/transaction.Transaction"
+                            "$ref": "#/definitions/models.Transaction"
                         }
                     },
                     "401": {
@@ -126,7 +126,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/transaction.Transaction"
+                            "$ref": "#/definitions/models.Transaction"
                         }
                     },
                     "400": {
@@ -146,7 +146,47 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "category.Category": {
+        "dto.CreateCategoryRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateTransactionRequest": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/models.TransactionType"
+                }
+            }
+        },
+        "dto.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "invalid payload"
+                }
+            }
+        },
+        "handlers.CategoryResponse": {
             "type": "object",
             "required": [
                 "created_at",
@@ -169,7 +209,7 @@ const docTemplate = `{
                 "transactions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/transaction.Transaction"
+                        "$ref": "#/definitions/models.Transaction"
                     }
                 },
                 "updated_at": {
@@ -180,47 +220,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.CreateCategoryRequest": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.CreateTransactionRequest": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "number"
-                },
-                "category": {
-                    "type": "string"
-                },
-                "date": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dto.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "example": "invalid payload"
-                }
-            }
-        },
-        "transaction.Transaction": {
+        "models.Transaction": {
             "type": "object",
             "required": [
                 "amount",
@@ -250,12 +250,23 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
-                    "type": "integer"
+                    "$ref": "#/definitions/models.TransactionType"
                 },
                 "updated_at": {
                     "type": "string"
                 }
             }
+        },
+        "models.TransactionType": {
+            "type": "integer",
+            "enum": [
+                0,
+                1
+            ],
+            "x-enum-varnames": [
+                "Expense",
+                "Income"
+            ]
         }
     }
 }`

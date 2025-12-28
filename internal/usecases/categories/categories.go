@@ -8,6 +8,7 @@ import (
 
 type CategoriesUseCase interface {
 	Create(category dto.CreateCategoryRequest, userId string) (models.Category, error)
+	GetAll(userId string) ([]models.Category, error)
 }
 type Service struct {
 	CategoryRepository repositories.CategoryRepository

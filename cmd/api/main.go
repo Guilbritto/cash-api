@@ -19,7 +19,7 @@ import (
 	"github.com/Guilbritto/cash-api/internal/handlers"
 	"github.com/Guilbritto/cash-api/internal/middleware"
 	"github.com/Guilbritto/cash-api/internal/repositories"
-	"github.com/Guilbritto/cash-api/internal/usecases"
+	useCases "github.com/Guilbritto/cash-api/internal/useCases"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -35,7 +35,7 @@ func main() {
 
 	app := fiber.New()
 	repo := repositories.New()
-	useCases := usecases.New(repo)
+	useCases := useCases.New(repo)
 	h := handlers.New(useCases)
 
 	app.Use(requestid.New())

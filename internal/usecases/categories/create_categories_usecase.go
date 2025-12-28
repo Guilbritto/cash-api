@@ -2,19 +2,20 @@ package categories
 
 import (
 	"github.com/Guilbritto/cash-api/internal/dto"
+	"github.com/Guilbritto/cash-api/internal/mappers"
 	"github.com/Guilbritto/cash-api/internal/models"
 )
 
-func (s *Service) Create(category dto.CreateCategoryRequest, userId string) (models.Category, error) {
+func (s *Service) Create(category dto.CreateCategoryRequest, userId string) (*dto.CategoryResponse, error) {
 	newCategory, err := models.NewCategory(category.Name, userId)
 	if err != nil {
-		return models.Category{}, err
+		return &dto.CategoryResponse{}, err
 	}
 
 	createdCategory, err := s.CategoryRepository.Save(newCategory)
 	if err != nil {
-		return models.Category{}, err
+		return &dto.CategoryResponse{}, err
 	}
 
-	return createdCategory, nil
+	return mappers.CategoryToResponse(createdCategory), nil
 }

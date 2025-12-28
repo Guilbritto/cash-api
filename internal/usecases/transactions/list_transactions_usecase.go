@@ -1,8 +1,15 @@
 package transactions
 
-import "github.com/Guilbritto/cash-api/internal/models"
+import (
+	"github.com/Guilbritto/cash-api/internal/dto"
+	"github.com/Guilbritto/cash-api/internal/mappers"
+)
 
-func (s *Service) GetAll(userId string) ([]models.Transaction, error) {
+func (s *Service) GetAll(userId string) (*[]dto.TransactionResponse, error) {
+	transactions, err := s.TransactionRepository.GetAll(userId)
+	if err != nil {
+		return &[]dto.TransactionResponse{}, err
+	}
 
-	return s.TransactionRepository.GetAll(userId)
+	return mappers.TransactionsToResponse(transactions), nil
 }

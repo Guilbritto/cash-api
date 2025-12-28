@@ -2,14 +2,15 @@ package transactions
 
 import (
 	"github.com/Guilbritto/cash-api/internal/dto"
+	"github.com/Guilbritto/cash-api/internal/mappers"
 	"github.com/Guilbritto/cash-api/internal/models"
 )
 
-func (s *Service) Create(transaction *dto.CreateTransactionRequest, userId string) (models.Transaction, error) {
+func (s *Service) Create(transaction *dto.CreateTransactionRequest, userId string) (*dto.TransactionResponse, error) {
 
 	category, err := s.CategoryRepository.GetById(transaction.CategoryId)
 	if err != nil {
-		return models.Transaction{}, err
+		return &dto.TransactionResponse{}, err
 	}
 
 	newTransaction, err := models.NewTransaction(
@@ -22,13 +23,13 @@ func (s *Service) Create(transaction *dto.CreateTransactionRequest, userId strin
 	)
 
 	if err != nil {
-		return models.Transaction{}, err
+		return &dto.TransactionResponse{}, err
 	}
 
 	createdTransaction, err := s.TransactionRepository.Save(newTransaction)
 	if err != nil {
-		return models.Transaction{}, err
+		return &dto.TransactionResponse{}, err
 	}
 
-	return createdTransaction, nil
+	return mappers.TransactionToResponse(createdTransaction), nil
 }

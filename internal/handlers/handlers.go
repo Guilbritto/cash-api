@@ -1,14 +1,12 @@
 package handlers
 
-import (
-	"github.com/Guilbritto/cash-api/internal/usecases"
-)
+import "github.com/Guilbritto/cash-api/internal/useCases"
 
 type Handlers struct {
-	UseCases usecases.UseCases
+	UseCases useCases.UseCases
 }
 
-func New(useCases *usecases.UseCases) *Handlers {
+func New(useCases *useCases.UseCases) *Handlers {
 	return &Handlers{
 		UseCases: *useCases,
 	}

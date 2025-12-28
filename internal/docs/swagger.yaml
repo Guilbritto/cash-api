@@ -1,6 +1,32 @@
 basePath: /api
 definitions:
-  category.Category:
+  dto.CreateCategoryRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  dto.CreateTransactionRequest:
+    properties:
+      amount:
+        type: number
+      category_id:
+        type: string
+      date:
+        type: string
+      description:
+        type: string
+      type:
+        $ref: '#/definitions/models.TransactionType'
+    type: object
+  dto.ErrorResponse:
+    properties:
+      message:
+        example: invalid payload
+        type: string
+    type: object
+  handlers.CategoryResponse:
     properties:
       created_at:
         type: string
@@ -10,7 +36,7 @@ definitions:
         type: string
       transactions:
         items:
-          $ref: '#/definitions/transaction.Transaction'
+          $ref: '#/definitions/models.Transaction'
         type: array
       updated_at:
         type: string
@@ -24,33 +50,7 @@ definitions:
     - updated_at
     - user_id
     type: object
-  dto.CreateCategoryRequest:
-    properties:
-      name:
-        type: string
-    required:
-    - name
-    type: object
-  dto.CreateTransactionRequest:
-    properties:
-      amount:
-        type: number
-      category:
-        type: string
-      date:
-        type: string
-      description:
-        type: string
-      type:
-        type: integer
-    type: object
-  dto.ErrorResponse:
-    properties:
-      message:
-        example: invalid payload
-        type: string
-    type: object
-  transaction.Transaction:
+  models.Transaction:
     properties:
       amount:
         type: number
@@ -65,7 +65,7 @@ definitions:
       id:
         type: string
       type:
-        type: integer
+        $ref: '#/definitions/models.TransactionType'
       updated_at:
         type: string
     required:
@@ -76,6 +76,14 @@ definitions:
     - id
     - type
     type: object
+  models.TransactionType:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - Expense
+    - Income
 host: localhost:3000
 info:
   contact:
@@ -104,7 +112,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/category.Category'
+            $ref: '#/definitions/handlers.CategoryResponse'
         "400":
           description: Bad Request
           schema:
@@ -127,7 +135,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/transaction.Transaction'
+            $ref: '#/definitions/models.Transaction'
         "401":
           description: Unauthorized
           schema:
@@ -156,7 +164,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/transaction.Transaction'
+            $ref: '#/definitions/models.Transaction'
         "400":
           description: Bad Request
           schema:
