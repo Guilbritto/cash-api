@@ -1,4 +1,4 @@
-package useCases
+package usecases
 
 import (
 	"github.com/Guilbritto/cash-api/internal/repositories"

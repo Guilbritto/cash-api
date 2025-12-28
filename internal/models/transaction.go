@@ -4,7 +4,6 @@ import (
 	defaultError "errors"
 	"time"
 
-	"github.com/Guilbritto/cash-api/internal/errors"
 	"github.com/google/uuid"
 )
 
@@ -20,20 +19,23 @@ func (t TransactionType) IsValid() bool {
 }
 
 type Transaction struct {
-	Id          string          `db:"id" json:"id" validate:"required"`
-	UserId      string          `db:"user_id" json:"-" validate:"required"`
-	Amount      float64         `db:"amount" json:"amount" validate:"required"`
-	Type        TransactionType `db:"type" json:"type" validate:"required"`
-	Date        time.Time       `db:"date" json:"date" validate:"required"`
-	Description string          `db:"description" json:"description"`
-	CategoryId  string          `db:"category_id" json:"category_id,omitempty" validate:"required"`
-	CreatedAt   time.Time       `db:"created_at" json:"created_at" validate:"required"`
-	UpdatedAt   time.Time       `db:"updated_at" json:"updated_at"`
+	Id          uuid.UUID       `gorm:"type:uuid;primaryKey" db:"id" json:"id"`
+	UserId      string          `gorm:"column:user_id;type:varchar(64);not null" db:"user_id" json:"-"`
+	Amount      float64         `gorm:"type:numeric(12,2);not null" db:"amount" json:"amount"`
+	Type        TransactionType `gorm:"type:smallint;not null" db:"type" json:"type"`
+	Date        time.Time       `gorm:"type:date;not null" db:"date" json:"date"`
+	Description string          `gorm:"type:text" db:"description" json:"description"`
+
+	CategoryId uuid.UUID `gorm:"column:category_id;type:uuid;not null" db:"category_id" json:"category_id"`
+	Category   Category  `gorm:"foreignKey:CategoryId;references:Id" json:"category"`
+
+	CreatedAt time.Time `gorm:"not null" db:"created_at" json:"created_at"`
+	UpdatedAt time.Time `gorm:"not null" db:"updated_at" json:"updated_at"`
 }
 
-func NewTransaction(description string, amount float64, userId string, transactionType TransactionType, date time.Time, categoryId string) (*Transaction, error) {
+func NewTransaction(description string, amount float64, userId string, transactionType TransactionType, date time.Time, categoryId uuid.UUID) (*Transaction, error) {
 	tx := &Transaction{
-		Id:          uuid.New().String(),
+		Id:          uuid.New(),
 		UserId:      userId,
 		Description: description,
 		Amount:      amount,
@@ -46,10 +48,6 @@ func NewTransaction(description string, amount float64, userId string, transacti
 
 	if !tx.Type.IsValid() {
 		return nil, defaultError.New("Invalid transaction type")
-	}
-
-	if err := errors.ValidateStruct(tx); err != nil {
-		return nil, err
 	}
 
 	return tx, nil

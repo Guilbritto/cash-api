@@ -14,7 +14,7 @@ func TransactionsToResponse(transactions []models.Transaction) *[]dto.Transactio
 			Type:        transaction.Type,
 			Date:        transaction.Date,
 			Description: transaction.Description,
-			CategoryId:  transaction.CategoryId,
+			Category:    CategoryToResponse(transaction.Category),
 		})
 	}
 	return &response
@@ -27,7 +27,7 @@ func TransactionToResponse(transaction models.Transaction) *dto.TransactionRespo
 		Type:        transaction.Type,
 		Date:        transaction.Date,
 		Description: transaction.Description,
-		CategoryId:  transaction.CategoryId,
+		Category:    CategoryToResponse(transaction.Category),
 	}
 	return &response
 }

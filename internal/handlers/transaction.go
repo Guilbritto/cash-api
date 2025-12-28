@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/Guilbritto/cash-api/internal/dto"
+	"github.com/Guilbritto/cash-api/internal/errors"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -27,6 +28,12 @@ func (h *Handlers) CreateTransaction(c *fiber.Ctx) error {
 	if err := c.BodyParser(transaction); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid transaction",
+		})
+	}
+
+	if err := errors.ValidateStruct(transaction); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
 		})
 	}
 
