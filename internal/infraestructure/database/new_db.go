@@ -3,7 +3,7 @@ package database
 import (
 	"os"
 
-	"github.com/Guilbritto/cash-api/internal/domain/entities"
+	"github.com/Guilbritto/cash-api/internal/models"
 	postgres "gorm.io/driver/postgres"
 	gorm "gorm.io/gorm"
 )
@@ -16,7 +16,7 @@ func NewDb() *gorm.DB {
 		panic("fail to connecto to database")
 	}
 
-	db.AutoMigrate(&entities.Category{}, &entities.Transaction{})
+	db.AutoMigrate(&models.Category{}, &models.Transaction{})
 
 	return db
 }

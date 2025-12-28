@@ -15,12 +15,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Guilbritto/cash-api/internal/application/category"
-	"github.com/Guilbritto/cash-api/internal/application/transaction"
-	"github.com/Guilbritto/cash-api/internal/controllers"
 	_ "github.com/Guilbritto/cash-api/internal/docs"
-	"github.com/Guilbritto/cash-api/internal/infraestructure/database"
+	"github.com/Guilbritto/cash-api/internal/handlers"
 	"github.com/Guilbritto/cash-api/internal/middleware"
+	"github.com/Guilbritto/cash-api/internal/repositories"
+	"github.com/Guilbritto/cash-api/internal/usecases"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -35,32 +34,20 @@ func main() {
 	}
 
 	app := fiber.New()
+	repo := repositories.New()
+	useCases := usecases.New(repo)
+	h := handlers.New(useCases)
 
-	// Registrando middlewares globais
 	app.Use(requestid.New())
 	app.Use(cors.New())
 	app.Use(logger.New())
 
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 
-	db := database.NewDb()
-
-	transactionService := transaction.TransactionService{
-		TransactionRepository: &database.TransactionRepository{Db: db},
-		CategoryRepository:    &database.CategoryRepository{Db: db},
-	}
-	categoryService := category.CategoryService{
-		CategoryRepository: &database.CategoryRepository{Db: db},
-	}
-	controller := controllers.ControllerBase{
-		TransactionService: transactionService,
-		CategoryService:    categoryService,
-	}
-
 	api := app.Group("/api", middleware.AuthMiddleware)
-	api.Post("/transactions", controller.CreateTransaction)
-	api.Get("/transactions", controller.GetTransactions)
-	api.Post("/category", controller.CreateCategory)
+
+	h.RegisterCategoriesEndpoint(api)
+	h.RegisterTransactionEndpoint(api)
 
 	log.Fatal(app.Listen(":3000"))
 }
